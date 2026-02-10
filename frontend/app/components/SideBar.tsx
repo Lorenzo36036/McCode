@@ -1,6 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { LayoutDashboard, History, LogOut, Menu, X } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface MenuOption {
   id: string;
@@ -11,8 +13,8 @@ interface MenuOption {
 }
 
 const Sidebar = () => {
-  const [activeTab, setActiveTab] = useState("/admin/dashboard");
-  const [isOpen, setIsOpen] = useState(false); // Estado para móviles
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
   const menuOptions: MenuOption[] = [
     {
@@ -25,7 +27,7 @@ const Sidebar = () => {
     {
       id: "historial",
       name: "Historial",
-      url: "/admin/historial",
+      url: "/admin/order-history",
       icon: <History size={20} />,
       variant: "default",
     },
@@ -40,7 +42,6 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Botón Flotante para Móviles (Visible solo < 1280px) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="xl:hidden fixed top-4 left-4 z-50 p-2 bg-[#e35151] text-white rounded-xl shadow-lg"
@@ -57,7 +58,7 @@ const Sidebar = () => {
 
       <aside
         className={`
-        fixed top-0 left-0 h-screen bg-white border-r border-gray-100 flex flex-col z-40 transition-all duration-300
+         fixed top-0 left-0 h-screen bg-white border-r border-gray-100 flex flex-col z-40 transition-all duration-300
         ${isOpen ? "w-72 translate-x-0" : "-translate-x-full xl:translate-x-0 xl:w-72"}
       `}
       >
@@ -70,16 +71,16 @@ const Sidebar = () => {
             {menuOptions
               .filter((opt) => opt.variant === "default")
               .map((option) => (
-                <button
+                <Link
+                  href={option.url}
                   key={option.id}
                   onClick={() => {
-                    setActiveTab(option.url);
                     setIsOpen(false);
                   }}
                   className={`
                     w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl font-bold transition-all whitespace-nowrap
                     ${
-                      activeTab === option.url
+                      pathname === option.url
                         ? "bg-[#e35151] text-white shadow-xl shadow-red-100"
                         : "text-gray-400 hover:bg-gray-50 hover:text-gray-600"
                     }
@@ -87,7 +88,7 @@ const Sidebar = () => {
                 >
                   <div className="shrink-0">{option.icon}</div>
                   <span className="text-sm">{option.name}</span>
-                </button>
+                </Link>
               ))}
           </div>
 
