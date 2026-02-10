@@ -1,7 +1,24 @@
 /* eslint-disable @next/next/no-img-element */
-import React from "react";
+"use client";
 
-const page = () => {
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { LoginFormValues, schemaLoginZod } from "./validations/loginZod";
+
+const LoginPage = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(schemaLoginZod),
+    mode: "onChange",
+  });
+
+  const onSubmit = async (data: LoginFormValues) => {
+    console.log("SUCCESS", data);
+  };
+
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
       <div className="order-1 flex flex-col justify-center px-10 lg:px-24 bg-white">
@@ -20,15 +37,26 @@ const page = () => {
             </span>
           </div>
 
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">
                 Correo electrónico
               </label>
               <input
+                {...register("email")}
                 type="email"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#e35151] outline-none transition-all shadow-sm"
+                placeholder="tu@email.com"
+                className={`w-full px-4 py-3 rounded-xl border outline-none transition-all shadow-sm ${
+                  errors.email
+                    ? "border-red-500"
+                    : "border-gray-200 focus:border-[#e35151]"
+                }`}
               />
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-1 font-medium italic">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -41,9 +69,20 @@ const page = () => {
                 </span>
               </div>
               <input
+                {...register("password")}
                 type="password"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#e35151] outline-none transition-all shadow-sm"
+                placeholder="••••••••"
+                className={`w-full px-4 py-3 rounded-xl border outline-none transition-all shadow-sm ${
+                  errors.password
+                    ? "border-red-500"
+                    : "border-gray-200 focus:border-[#e35151]"
+                }`}
               />
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1 font-medium italic">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <div className="flex items-center gap-2 text-sm text-gray-600 font-medium">
@@ -54,23 +93,32 @@ const page = () => {
               <span>Recuérdame</span>
             </div>
 
-            <button className="w-full bg-[#e35151] hover:bg-red-600 text-white font-black py-4 rounded-xl shadow-lg shadow-red-100 transition-all uppercase tracking-widest text-sm">
+            <button
+              disabled={!isValid}
+              type="submit"
+              className={`w-full font-black py-4 rounded-xl shadow-lg transition-all uppercase tracking-widest text-sm 
+                ${
+                  !isValid
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
+                    : "bg-[#e35151] hover:bg-red-600 text-white shadow-red-100 active:scale-95"
+                }`}
+            >
               Entrar
             </button>
           </form>
         </div>
       </div>
 
-      <div className=" lg:order-2 hidden md:block relative  aspect-9/4 sm:aspect-square">
+      <div className="lg:order-2 hidden md:block relative aspect-9/4 lg:aspect-square">
         <img
-          src="/hamburguesa.jpg"
+          src="/hamburger.jpg"
           alt="Login background"
-          className="absolute inset-0 w-full h-full object-cover object-center sm:object  "
+          className="absolute inset-0 w-full h-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-linear-to from-black/20 to-transparent"></div>
+        <div className="absolute inset-0 bg-linear-to-r from-black/20 to-transparent"></div>
       </div>
     </div>
   );
 };
 
-export default page;
+export default LoginPage;
