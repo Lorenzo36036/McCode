@@ -2,6 +2,9 @@
 "use client";
 import { useState } from "react";
 import { interactionButtonSaveCardCookie } from "../cookies/interactionButtonSaveCardCookie.ts";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getCarActionCookies } from "../cookies/getCarActionCookies";
+import { PriceProducts } from "../interface/Products.js";
 
 const ProductCard = ({
   name,
@@ -12,14 +15,21 @@ const ProductCard = ({
   price: number;
   image: string;
 }) => {
-  const [count, setCount] = useState<number>(0);
+  const queryClient = useQueryClient();
+  const { data: car = [] } = useQuery({
+    queryKey: ["car"],
+    queryFn: () => getCarActionCookies(),
+  });
+
+  const productInCar = car.find((p: PriceProducts) => p.name === name);
+  const currentQuantity = productInCar ? productInCar.quantity : 0;
 
   const productAdd = async () => {
-    const quantity = count + 1;
+    const quantity = currentQuantity + 1;
     const priceTotal = price * quantity;
     try {
       await interactionButtonSaveCardCookie(name, price, priceTotal, quantity);
-      setCount(quantity);
+      queryClient.invalidateQueries({ queryKey: ["car"] });
     } catch (e) {
       alert("Ocurrio un error al agregar el producto");
       console.log(e);
