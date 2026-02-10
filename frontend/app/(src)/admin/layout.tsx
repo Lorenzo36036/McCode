@@ -1,4 +1,5 @@
 import Sidebar from "@/app/components/SideBar";
+import { Utensils } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,11 +13,29 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="w-screen flex bg-white">
+    <div className="w-screen flex bg-gray-50 ">
       <div>
         <Sidebar />
       </div>
-      {children}
+      <div className="flex-col w-full">
+        <nav className=" bg-white border-b border-gray-100 px-6 py-4 flex justify-between items-center sticky top-0 z-10">
+          <div className="flex items-center gap-3">
+            <div className="bg-[#e35151] p-1.5 rounded-lg opacity-0 lg:opacity-100">
+              <Utensils className="text-white w-5 h-5" />
+            </div>
+            <span className="py-1 text-2xl font-black italic tracking-tighter text-[#e35151] uppercase">
+              McLorenzo Admin
+            </span>
+          </div>
+          <div className="flex items-center gap-2 bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-full">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+            <span className="text-[10px] font-black uppercase tracking-widest">
+              En línea
+            </span>
+          </div>
+        </nav>
+        {children}
+      </div>
     </div>
   );
 }
