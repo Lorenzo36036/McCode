@@ -2,13 +2,7 @@
 "use server";
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
-
-export interface Props {
-  name: string;
-  priceUnit: number;
-  priceTotal: number;
-  quantity: number;
-}
+import { PriceProducts } from "../interface/Products";
 
 export async function interactionButtonSaveCardCookie(
   name: string,
@@ -18,7 +12,7 @@ export async function interactionButtonSaveCardCookie(
 ): Promise<void> {
   const cookieStore = await cookies();
   const cookie = cookieStore.get("carrito");
-  let car: Props[] = [];
+  let car: PriceProducts[] = [];
 
   if (cookie?.value) {
     try {
