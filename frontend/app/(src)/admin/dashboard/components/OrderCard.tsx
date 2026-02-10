@@ -34,7 +34,7 @@ const OrderCard = ({
         <p className="text-xl font-black text-gray-800">${total}</p>
       </div>
       <button
-        className={`${btnColor} text-white font-black py-3 px-6 rounded-2xl shadow-lg transition-all uppercase tracking-widest text-[10px] active:scale-95 min-w-[140px]`}
+        className={`${btnColor} text-white font-black py-3 px-6 rounded-2xl shadow-lg transition-all uppercase tracking-widest text-[10px] active:scale-95 min-w-35`}
       >
         {btnText}
       </button>
