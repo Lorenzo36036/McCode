@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { LayoutDashboard, History, LogOut, Menu, X } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 
 interface MenuOption {
   id: string;
@@ -97,6 +97,9 @@ const Sidebar = () => {
               .filter((opt) => opt.variant === "exit")
               .map((option) => (
                 <button
+                  onClick={() => {
+                    redirect("/login");
+                  }}
                   key={option.id}
                   className="flex items-center gap-4 w-full px-4 py-3.5 text-gray-400 font-bold hover:text-[#e35151] hover:bg-red-50 rounded-2xl transition-all group whitespace-nowrap"
                 >
