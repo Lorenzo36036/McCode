@@ -7,10 +7,12 @@ import { getCarActionCookies } from "../cookies/getCarActionCookies";
 import { PriceProducts } from "../interface/Products.js";
 
 const ProductCard = ({
+  id,
   name,
   price,
   image,
 }: {
+  id: string;
   name: string;
   price: number;
   image: string;
@@ -28,7 +30,13 @@ const ProductCard = ({
     const quantity = currentQuantity + 1;
     const priceTotal = price * quantity;
     try {
-      await interactionButtonSaveCardCookie(name, price, priceTotal, quantity);
+      await interactionButtonSaveCardCookie(
+        name,
+        price,
+        priceTotal,
+        quantity,
+        id,
+      );
       queryClient.invalidateQueries({ queryKey: ["car"] });
     } catch (e) {
       alert("Ocurrio un error al agregar el producto");

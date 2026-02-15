@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import ProductOfCar from "./ProductOfCar";
 import { getCarActionCookies } from "../cookies/getCarActionCookies";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PriceProducts } from "../interface/Products";
 import { useState } from "react";
 import { deleteCarActionCookies } from "../cookies/deleteCarActionCookies";
+import { createOrder } from "@/app/api/post";
 
 const OrderCar = () => {
   const [name, setName] = useState<string>("");
@@ -16,8 +18,49 @@ const OrderCar = () => {
     queryFn: () => getCarActionCookies(),
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: createOrder,
+    onSuccess: (data) => {
+      console.log("✅ Orden creada:", data);
+      // Aquí puedes limpiar el carrito o redirigir al usuario
+      // queryClient.invalidateQueries({ queryKey: ['orders'] });
+      alert(`¡Pedido enviado!`);
+      clearProducts();
+    },
+    onError: (error) => {
+      console.error("❌ Error al crear la orden:", error);
+      alert("Hubo un error al procesar tu pedido.");
+    },
+  });
+
   const sendData = () => {
-    alert(name);
+    const totalPagar = car.reduce(
+      (acc: number, item: any) => acc + item.priceTotal,
+      0,
+    );
+    const totalProductos = car.reduce(
+      (acc: number, item: any) => acc + item.quantity,
+      0,
+    );
+
+    console.log(car);
+
+    const numeroTicket = Date.now().toString().slice(-5);
+    const orderPayload = {
+      nombreConsumidor: name,
+      numeroTicket: numeroTicket,
+      cantidad: totalProductos,
+      precioTotal: totalPagar,
+      estado: "pendiente",
+      orderDetail: car.map((item: any) => ({
+        nombreProducto: item.name,
+        cantidad: item.quantity,
+        precioUnitario: item.priceUnit,
+        product: item.id,
+      })),
+    };
+
+    mutate(orderPayload);
   };
 
   const clearProducts = async () => {
@@ -91,16 +134,23 @@ const OrderCar = () => {
       </div>
 
       <button
-        disabled={car.length === 0 || name.trim().length === 0}
+        disabled={car.length === 0 || name.trim().length === 0 || isPending}
         onClick={() => sendData()}
         className={`h-12 w-full py-4 rounded-xl transition-all uppercase tracking-widest text-sm shadow-lg
     ${
-      car.length === 0 || name.trim().length === 0
+      car.length === 0 || name.trim().length === 0 || isPending
         ? "bg-gray-300 cursor-not-allowed text-gray-500 shadow-none"
         : "bg-red-600 hover:bg-red-500 text-white shadow-red-200 active:scale-[0.98] font-black"
     }`}
       >
-        Procesar pedido
+        {isPending ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>
+            Enviando...
+          </span>
+        ) : (
+          "Procesar pedido"
+        )}
       </button>
     </div>
   );

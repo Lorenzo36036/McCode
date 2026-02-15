@@ -9,6 +9,7 @@ export async function interactionButtonSaveCardCookie(
   priceUnit: number,
   priceTotal: number,
   quantity: number,
+  id: string,
 ): Promise<void> {
   const cookieStore = await cookies();
   const cookie = cookieStore.get("carrito");
@@ -34,6 +35,7 @@ export async function interactionButtonSaveCardCookie(
     }
   } else if (quantity > 0) {
     car.push({
+      id,
       name,
       quantity,
       priceUnit,
