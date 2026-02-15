@@ -13,6 +13,9 @@ export class OrderDetail {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
+  @Column({ name: 'nombre_producto' })
+  nombreProducto!: string;
+
   @Column()
   cantidad!: number;
 
@@ -25,5 +28,5 @@ export class OrderDetail {
 
   @ManyToOne(() => PurchaseOrder, (purchaseOrder) => purchaseOrder.orderDetail)
   @JoinColumn({ name: 'orden_de_compra_id' })
-  PurchaseOrder!: PurchaseOrder;
+  purchaseOrder!: PurchaseOrder;
 }

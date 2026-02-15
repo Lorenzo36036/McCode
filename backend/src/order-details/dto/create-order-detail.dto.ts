@@ -1,6 +1,9 @@
 import { IsNumber, IsPositive, IsUUID, IsNotEmpty } from 'class-validator';
 
 export class CreateOrderDetailDto {
+  @IsNotEmpty({ message: 'el nombre del producto es obligatorio' })
+  nombreProducto!: string;
+
   @IsNumber()
   @IsPositive({ message: 'La cantidad debe ser mayor a 0' })
   @IsNotEmpty({ message: 'La cantidad es obligatoria' })
@@ -13,5 +16,5 @@ export class CreateOrderDetailDto {
 
   @IsUUID('all', { message: 'El ID del producto debe ser un UUID válido' })
   @IsNotEmpty({ message: 'El ID del producto es obligatorio' })
-  productId!: string;
+  product!: string;
 }

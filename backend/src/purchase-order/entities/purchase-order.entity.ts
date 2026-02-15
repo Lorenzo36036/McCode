@@ -26,7 +26,7 @@ export class PurchaseOrder {
   @Column({ name: 'numero_ticket' })
   numeroTicket!: string;
 
-  @Column()
+  @Column({ name: 'cantidad_total', type: 'int' })
   cantidad!: number;
 
   @Column({ name: 'precio_total', type: 'decimal', precision: 10, scale: 2 })
@@ -42,7 +42,7 @@ export class PurchaseOrder {
   @CreateDateColumn({ name: 'fecha_compra' })
   fechaCompra!: Date;
 
-  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.PurchaseOrder, {
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.purchaseOrder, {
     cascade: true,
   })
   orderDetail!: OrderDetail[];

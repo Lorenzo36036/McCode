@@ -5,7 +5,7 @@ import { UpdateOrderDetailDto } from './dto/update-order-detail.dto';
 @Injectable()
 export class OrderDetailsService {
   create(createOrderDetailDto: CreateOrderDetailDto) {
-    return 'This action adds a new orderDetail';
+    return createOrderDetailDto;
   }
 
   findAll() {
