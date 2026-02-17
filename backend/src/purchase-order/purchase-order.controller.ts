@@ -27,7 +27,7 @@ export class PurchaseOrderController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.purchaseOrderService.findOne(+id);
+    return this.purchaseOrderService.findOne(id);
   }
 
   @Patch(':id')
@@ -35,7 +35,7 @@ export class PurchaseOrderController {
     @Param('id') id: string,
     @Body() updatePurchaseOrderDto: UpdatePurchaseOrderDto,
   ) {
-    return this.purchaseOrderService.update(+id, updatePurchaseOrderDto);
+    return this.purchaseOrderService.update(id, updatePurchaseOrderDto);
   }
 
   @Delete(':id')

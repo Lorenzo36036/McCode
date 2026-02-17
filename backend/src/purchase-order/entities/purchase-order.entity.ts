@@ -23,8 +23,8 @@ export class PurchaseOrder {
   @Column({ name: 'nombre_consumidor' })
   nombreConsumidor!: string;
 
-  @Column({ name: 'numero_ticket' })
-  numeroTicket!: string;
+  @Column({ name: 'numero_ticket', type: 'int' })
+  numeroTicket!: number;
 
   @Column({ name: 'cantidad_total', type: 'int' })
   cantidad!: number;

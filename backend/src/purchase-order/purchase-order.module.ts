@@ -8,5 +8,6 @@ import { PurchaseOrder } from './entities/purchase-order.entity';
   imports: [TypeOrmModule.forFeature([PurchaseOrder])],
   controllers: [PurchaseOrderController],
   providers: [PurchaseOrderService],
+  exports: [TypeOrmModule],
 })
 export class PurchaseOrderModule {}

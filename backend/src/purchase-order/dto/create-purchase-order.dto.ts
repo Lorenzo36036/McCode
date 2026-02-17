@@ -24,9 +24,9 @@ export class CreatePurchaseOrderDto {
   })
   nombreConsumidor!: string;
 
-  @IsString()
+  @IsNumber()
   @IsNotEmpty({ message: 'No puede estar vacio la propiedad numeroTicket' })
-  numeroTicket!: string;
+  numeroTicket!: number;
 
   @IsNumber()
   @IsNotEmpty({ message: 'No puede estar vacio la propiedad cantidad' })
