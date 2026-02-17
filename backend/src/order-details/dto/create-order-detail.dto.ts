@@ -16,5 +16,5 @@ export class CreateOrderDetailDto {
 
   @IsUUID('all', { message: 'El ID del producto debe ser un UUID válido' })
   @IsNotEmpty({ message: 'El ID del producto es obligatorio' })
-  product!: string;
+  productId!: string;
 }

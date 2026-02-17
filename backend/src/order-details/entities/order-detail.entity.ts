@@ -22,6 +22,9 @@ export class OrderDetail {
   @Column({ name: 'precio_unitario', type: 'decimal', precision: 10, scale: 2 })
   precioUnitario!: number;
 
+  @Column({ name: 'productos_en_ventas_id' })
+  productId!: string;
+
   @ManyToOne(() => Product, (product) => product.orderDetail)
   @JoinColumn({ name: 'productos_en_ventas_id' })
   product!: Product;
