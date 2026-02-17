@@ -5,6 +5,11 @@ import { dataBaseConfig } from '@/configuration/configuration'; // Tu alias @ fu
 import { PurchaseOrderModule } from './purchase-order/purchase-order.module';
 import { ProductsModule } from './products/products.module';
 import { OrderDetailsModule } from './order-details/order-details.module';
+import { AppService } from './app.service';
+import { Product } from './products/entities/product.entity';
+import { ShiftsModule } from './shifts/shifts.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -13,6 +18,7 @@ import { OrderDetailsModule } from './order-details/order-details.module';
       load: [dataBaseConfig],
     }),
 
+    TypeOrmModule.forFeature([Product]),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
@@ -29,6 +35,10 @@ import { OrderDetailsModule } from './order-details/order-details.module';
     PurchaseOrderModule,
     ProductsModule,
     OrderDetailsModule,
+    ShiftsModule,
+    AuthModule,
+    UsersModule,
   ],
+  providers: [AppService],
 })
 export class AppModule {}
