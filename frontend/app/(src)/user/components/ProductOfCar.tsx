@@ -9,6 +9,7 @@ function ProductOfCar({
   priceUnit,
   priceTotal,
   quantity,
+  id,
 }: PriceProducts) {
   const queryClient = useQueryClient();
 
@@ -22,6 +23,7 @@ function ProductOfCar({
         priceUnit,
         priceTotal,
         newQuantity,
+        id
       );
       queryClient.invalidateQueries({ queryKey: ["car"] });
     } catch (e) {

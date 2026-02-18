@@ -24,6 +24,7 @@ const OrderCar = () => {
       console.log("✅ Orden creada:", data);
       // Aquí puedes limpiar el carrito o redirigir al usuario
       // queryClient.invalidateQueries({ queryKey: ['orders'] });
+      queryClient.invalidateQueries({ queryKey: ["tickets"] });
       alert(`¡Pedido enviado!`);
       clearProducts();
     },
@@ -42,9 +43,6 @@ const OrderCar = () => {
       (acc: number, item: any) => acc + item.quantity,
       0,
     );
-
-    console.log(car);
-
     const numeroTicket = Date.now().toString().slice(-5);
     const orderPayload = {
       nombreConsumidor: name,
@@ -56,7 +54,7 @@ const OrderCar = () => {
         nombreProducto: item.name,
         cantidad: item.quantity,
         precioUnitario: item.priceUnit,
-        product: item.id,
+        productId: item.id,
       })),
     };
 
@@ -106,6 +104,7 @@ const OrderCar = () => {
               priceUnit={product.priceUnit}
               priceTotal={product.priceTotal}
               quantity={product.quantity}
+              id={product.id}
             />
           ))
         ) : (
