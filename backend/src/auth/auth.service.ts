@@ -1,24 +1,40 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '@/users/entities/user.entity';
+import { Injectable } from '@nestjs/common';
 import { UsersService } from '@/users/users.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
     private readonly userService: UsersService,
+    private jwtService: JwtService,
   ) {}
 
-  async signIn(email: string, pass: string) {
+  async validateUser(email: string, pass: string) {
     const user = await this.userService.findOne(email);
 
-    if (user?.password !== pass)
-      throw new UnauthorizedException('Usuario o Contrasena invalido');
+    if (user && user.password === pass) {
+      const { password, ...result } = user;
+      return result;
+    }
 
-    const { password, ...result } = user;
+    return null;
+  }
 
-    return result;
+  login(user: { email: string; nombre: string; id: string; role: string }) {
+    const payload = {
+      id: user.id,
+      email: user.email,
+    };
+    return {
+      message: 'Login exitoso',
+      user: {
+        id: user.id,
+        username: user.nombre,
+        email: user.email,
+        role: user.role,
+      },
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }
