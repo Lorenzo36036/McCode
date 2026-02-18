@@ -1,7 +1,12 @@
+"use client";
+
 import { OrderCar, ProductCard, SearchBar, TurnMonitor } from "./components";
 import { Utensils } from "lucide-react";
+import { getProducts } from "@/app/api/get ";
+import { useQuery } from "@tanstack/react-query";
+import { Key } from "react";
 
-async function Page() {
+function Page() {
   const productos = [
     {
       id: 1,
@@ -41,6 +46,11 @@ async function Page() {
     },
   ];
 
+  const { data: products = [], isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  });
+
   return (
     <div className="min-h-screen bg-primary">
       <div className="bg-three p-4 text-white flex justify-between items-center font-bold italic">
@@ -60,14 +70,22 @@ async function Page() {
       </h2>
       <div className="w-full grid grid-cols-[1fr_400px] bg-primary p-4">
         <div className=" grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 justify-items-center  py-10 gap-10    ">
-          {productos.map((producto) => (
-            <ProductCard
-              key={producto.id}
-              name={producto.nombre}
-              price={producto.precio}
-              image={producto.imagen}
-            />
-          ))}
+          {products.map(
+            (producto: {
+              id: Key | null | undefined;
+              nombreProducto: string;
+              precioUnitario: number;
+              imagenUrl: string;
+            }) => (
+              <ProductCard
+                key={producto.id}
+                id={producto.id}
+                name={producto.nombreProducto}
+                price={producto.precioUnitario}
+                image={producto.imagenUrl}
+              />
+            ),
+          )}
         </div>
 
         <div className="flex justify-center h-screen ">
