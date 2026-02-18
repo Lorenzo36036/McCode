@@ -5,6 +5,9 @@ const OrderCard = ({
   total,
   btnText,
   btnColor,
+  onAction,
+  showBotonCancel,
+  handleUpdateStatus,
 }: {
   id: string;
   client: string;
@@ -12,32 +15,65 @@ const OrderCard = ({
   total: string;
   btnText: string;
   btnColor: string;
+  showBotonCancel?: boolean;
+  handleUpdateStatus?: () => void;
+  onAction?: () => void;
 }) => (
-  <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all hover:shadow-md">
-    <div className="flex items-center gap-4">
-      <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100">
-        <span className="text-2xl font-black text-gray-800">#{id}</span>
+  <div className="bg-white rounded-4xl border border-gray-100 shadow-sm flex flex-col overflow-hidden transition-all hover:shadow-md group">
+    <div className="p-5 flex items-center justify-between border-b border-gray-50 bg-gray-50/30">
+      <div className="flex flex-col">
+        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+          Ticket
+        </span>
+        <span className="text-xl font-black text-gray-800">#{id}</span>
       </div>
-      <div>
-        <h3 className="font-black italic uppercase text-gray-800 leading-none mb-1">
+      <div className="text-right">
+        <h3 className="font-black italic uppercase text-lg text-[#e35151] leading-none tracking-tight">
           {client}
         </h3>
-        <p className="text-xs text-gray-400 font-medium">{items}</p>
       </div>
     </div>
 
-    <div className="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 pt-3 md:pt-0">
-      <div className="text-right">
-        <p className="text-[10px] font-black text-gray-300 uppercase leading-none">
-          Total
-        </p>
-        <p className="text-xl font-black text-gray-800">${total}</p>
+    <div className="p-5 flex-1">
+      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">
+        Detalle del pedido
+      </span>
+      <p className="text-sm text-gray-600 font-medium leading-relaxed italic">
+        {items}
+      </p>
+    </div>
+
+    <div className="p-5 bg-white border-t border-gray-100 flex flex-col gap-4">
+      <div className="flex justify-between items-end">
+        <div className="flex flex-col">
+          <span className="text-[10px] font-black text-gray-300 uppercase leading-none mb-1">
+            Total a Pagar
+          </span>
+          <p className="text-2xl font-black text-gray-900 tracking-tighter">
+            ${parseFloat(total).toFixed(2)}
+          </p>
+        </div>
+
+        <div className="flex gap-4">
+          {showBotonCancel && (
+            <button
+              onClick={handleUpdateStatus}
+              disabled={!handleUpdateStatus}
+              className={`bg-gray-800 hover:bg-gray-700 text-white font-black py-4 px-3 rounded-2xl shadow-lg transition-all uppercase tracking-widest text-[11px] active:scale-95 w-full md:w-auto`}
+            >
+              Cancelar
+            </button>
+          )}
+
+          <button
+            onClick={onAction}
+            disabled={!onAction}
+            className={`${btnColor} text-white font-black py-4 px-8 rounded-2xl shadow-lg transition-all uppercase tracking-widest text-[11px] active:scale-95 w-full md:w-auto`}
+          >
+            {btnText}
+          </button>
+        </div>
       </div>
-      <button
-        className={`${btnColor} text-white font-black py-3 px-6 rounded-2xl shadow-lg transition-all uppercase tracking-widest text-[10px] active:scale-95 min-w-35`}
-      >
-        {btnText}
-      </button>
     </div>
   </div>
 );
