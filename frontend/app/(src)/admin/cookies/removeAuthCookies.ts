@@ -1,0 +1,7 @@
+import { cookies } from "next/headers";
+
+export async function removeAuthCookies() {
+  const cookieStore = await cookies();
+  cookieStore.delete("token");
+  cookieStore.delete("user");
+}

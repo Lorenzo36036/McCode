@@ -4,8 +4,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { LoginFormValues, schemaLoginZod } from "./validations/loginZod";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "@/app/api/post";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { setAuthCookies } from "../admin/cookies/setAuthCookies";
 
 const LoginPage = () => {
+  const router = useRouter();
+  const [send, setSend] = useState<boolean>(false);
+
   const {
     register,
     handleSubmit,
@@ -15,8 +23,23 @@ const LoginPage = () => {
     mode: "onChange",
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: login,
+    onSuccess: async (data) => {
+      alert("logeo exitoso");
+      await setAuthCookies(data.access_token, data.user);
+      router.push("/admin/dashboard");
+    },
+    onError: (error) => {
+      setSend(false);
+      console.error("Error al logear:", error);
+      alert("Hubo un error al logear.");
+    },
+  });
+
   const onSubmit = async (data: LoginFormValues) => {
-    console.log("SUCCESS", data);
+    setSend(true);
+    mutate(data);
   };
 
   return (
@@ -64,9 +87,6 @@ const LoginPage = () => {
                 <label className="text-sm font-bold text-gray-700">
                   Contraseña
                 </label>
-                <span className="text-sm font-bold text-[#e35151] cursor-pointer hover:underline">
-                  ¿Olvidaste tu contraseña?
-                </span>
               </div>
               <input
                 {...register("password")}
@@ -85,25 +105,17 @@ const LoginPage = () => {
               )}
             </div>
 
-            <div className="flex items-center gap-2 text-sm text-gray-600 font-medium">
-              <input
-                type="checkbox"
-                className="w-4 h-4 rounded border-gray-300 accent-[#e35151]"
-              />
-              <span>Recuérdame</span>
-            </div>
-
             <button
-              disabled={!isValid}
+              disabled={!isValid || send}
               type="submit"
               className={`w-full font-black py-4 rounded-xl shadow-lg transition-all uppercase tracking-widest text-sm 
                 ${
-                  !isValid
+                  !isValid || send
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
                     : "bg-[#e35151] hover:bg-red-600 text-white shadow-red-100 active:scale-95"
                 }`}
             >
-              Entrar
+              {isPending ? "..cargando" : "Entrar"}
             </button>
           </form>
         </div>

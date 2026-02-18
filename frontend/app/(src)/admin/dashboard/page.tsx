@@ -12,6 +12,7 @@ import QuickStat from "./components/QuickStat";
 import { getpurchaseOrder } from "@/app/api/get ";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { updateState } from "@/app/api/patch";
+import { useGetCredentials } from "../context/AuthProvider";
 
 enum OrderStatus {
   PENDIENTE = "pendiente",
@@ -22,6 +23,8 @@ enum OrderStatus {
 }
 
 const SimpleAdmin = () => {
+  const { token } = useGetCredentials();
+
   const queryClient = useQueryClient();
 
   const { data: products = [], isLoading } = useQuery({
