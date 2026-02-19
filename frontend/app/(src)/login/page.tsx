@@ -9,10 +9,16 @@ import { login } from "@/app/api/post";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { setAuthCookies } from "../admin/cookies/setAuthCookies";
+import Toast from "@/app/components/Toast";
+
+type ToastType = "success" | "danger" | "warning";
 
 const LoginPage = () => {
   const router = useRouter();
   const [send, setSend] = useState<boolean>(false);
+  const [typeToast, setTypeToast] = useState<ToastType | undefined>(undefined);
+  const [showToast, setShowToast] = useState(false);
+  const [message, setMessage] = useState("");
 
   const {
     register,
@@ -26,14 +32,21 @@ const LoginPage = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: login,
     onSuccess: async (data) => {
-      alert("logeo exitoso");
+      setTypeToast("success");
+      setShowToast(true);
+      setMessage("¡Bienvenido! Login exitoso");
+
       await setAuthCookies(data.access_token, data.user);
-      router.push("/admin/dashboard");
+
+      setTimeout(() => {
+        router.push("/admin/dashboard");
+      }, 1500);
     },
     onError: (error) => {
       setSend(false);
-      console.error("Error al logear:", error);
-      alert("Hubo un error al logear.");
+      setShowToast(true);
+      setTypeToast("danger");
+      setMessage(error.message);
     },
   });
 
@@ -44,7 +57,17 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
-      <div className="order-1 flex flex-col justify-center px-10 lg:px-24 bg-white">
+      <div className=" order-1 flex flex-col justify-center px-10 lg:px-24 bg-white">
+        {showToast && (
+          <div className="fixed top-5 left-5 z-50 animate-in fade-in slide-in-from-top-4">
+            <Toast
+              type={typeToast}
+              message={message}
+              setClose={() => setShowToast(!showToast)}
+            />
+          </div>
+        )}
+
         <div className="max-w-md w-full mx-auto">
           <div className="mb-10 flex items-center gap-3">
             <div className="bg-[#e35151] p-2 rounded-xl flex items-center justify-center w-10 h-10">
@@ -55,6 +78,7 @@ const LoginPage = () => {
                 <path d="M-4.5,107.6c0,4-3.7,8.3-8.4,8.3v67.6c0,9.6-13.1,9.6-13.1,0v-67.6c-4.6,0-8.6-3.6-8.6-8.9V69.8c0-3.3,4.7-3.4,4.7,0.1v27.5 h3.9h4.6h-0.3V69.7c0-3.1,4.3-3.3,4.3,0.1v27.6h8.4V69.7c0-3,4.6-3.1,4.6,0.1V107.6z M36.5,78.4v105c0,9.3-13.1,9.2-13.1,0v-41.6 h-6.9V78.4C16.4,63.8,36.5,63.8,36.5,78.4" />
               </svg>
             </div>
+
             <span className="text-2xl font-black italic tracking-tighter text-[#e35151] uppercase">
               McLorenzo
             </span>
