@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { LayoutDashboard, History, LogOut, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
+import { removeAuthCookies } from "@/app/(src)/admin/cookies/removeAuthCookies";
 
 interface MenuOption {
   id: string;
@@ -24,13 +25,13 @@ const Sidebar = () => {
       icon: <LayoutDashboard size={20} />,
       variant: "default",
     },
-    {
-      id: "historial",
-      name: "Historial",
-      url: "/admin/order-history",
-      icon: <History size={20} />,
-      variant: "default",
-    },
+    // {
+    //   id: "historial",
+    //   name: "Historial",
+    //   url: "/admin/order-history",
+    //   icon: <History size={20} />,
+    //   variant: "default",
+    // },
     {
       id: "logout",
       name: "Cerrar Sesión",
@@ -97,7 +98,8 @@ const Sidebar = () => {
               .filter((opt) => opt.variant === "exit")
               .map((option) => (
                 <button
-                  onClick={() => {
+                  onClick={async () => {
+                    await removeAuthCookies();
                     redirect("/login");
                   }}
                   key={option.id}
