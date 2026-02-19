@@ -4,13 +4,19 @@ import { fetchConfig } from "./utils/fetchConfig";
 
 export const updateState = ({
   id,
+  token,
   ...orderData
 }: {
   id: string;
-  [estado: string]: any;
+  token: string;
+  [key: string]: any;
 }) => {
-  return fetchConfig(`/purchase-order/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify(orderData),
-  });
+  return fetchConfig(
+    `/purchase-order/${id}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(orderData),
+    },
+    token,
+  );
 };

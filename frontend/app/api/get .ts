@@ -2,7 +2,8 @@ import { fetchConfig } from "./utils/fetchConfig";
 
 export const getProducts = () => fetchConfig("/products");
 
-export const getpurchaseOrder = () => fetchConfig(`/purchase-order`);
+export const getpurchaseOrder = (token: string) =>
+  fetchConfig(`/purchase-order`, {}, token);
 
 export const getShiftTickets = () => fetchConfig("/shifts");
 

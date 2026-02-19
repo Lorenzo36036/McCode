@@ -28,11 +28,12 @@ const SimpleAdmin = () => {
   const queryClient = useQueryClient();
 
   const { data: products = [], isLoading } = useQuery({
-    queryKey: ["products"],
-    queryFn: getpurchaseOrder,
+    queryKey: ["products", token],
+    queryFn: () => getpurchaseOrder(token as string),
     refetchInterval: 1500,
     refetchIntervalInBackground: true,
     refetchOnWindowFocus: false,
+    enabled: !!token,
   });
 
   const formatItems = (details: any[]) => {
@@ -41,8 +42,12 @@ const SimpleAdmin = () => {
       .join(", ");
   };
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: updateState,
+  const { mutate } = useMutation({
+    mutationFn: (orderVariables: { id: string; estado: OrderStatus }) =>
+      updateState({
+        ...orderVariables,
+        token: token as string,
+      }),
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["tickets"] }),
