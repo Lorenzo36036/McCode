@@ -8,12 +8,15 @@ import { PriceProducts } from "../interface/Products";
 import { useState } from "react";
 import { deleteCarActionCookies } from "../cookies/deleteCarActionCookies";
 import { createOrder } from "@/app/api/post";
+import { ShoppingCart, X } from "lucide-react";
 
 const OrderCar = () => {
   const [name, setName] = useState<string>("");
   const queryClient = useQueryClient();
+  const [isMinimized, setIsMinimized] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [lastOrder, setLastOrder] = useState<any>(null);
+
   const { data: car = [], isLoading } = useQuery({
     queryKey: ["car"],
     queryFn: () => getCarActionCookies(),
@@ -38,15 +41,10 @@ const OrderCar = () => {
       (acc: number, item: any) => acc + item.priceTotal,
       0,
     );
-    const totalProductos = car.reduce(
-      (acc: number, item: any) => acc + item.quantity,
-      0,
-    );
-    const numeroTicket = Date.now().toString().slice(-5);
     const orderPayload = {
       nombreConsumidor: name,
-      numeroTicket: numeroTicket,
-      cantidad: totalProductos,
+      numeroTicket: Date.now().toString().slice(-5),
+      cantidad: car.reduce((acc: number, item: any) => acc + item.quantity, 0),
       precioTotal: totalPagar,
       estado: "pendiente",
       orderDetail: car.map((item: any) => ({
@@ -56,7 +54,6 @@ const OrderCar = () => {
         productId: item.id,
       })),
     };
-
     mutate(orderPayload);
   };
 
@@ -64,101 +61,123 @@ const OrderCar = () => {
     await deleteCarActionCookies();
     queryClient.invalidateQueries({ queryKey: ["car"] });
     setName("");
-    return;
   };
 
   const totalPrice = car.reduce(
-    (acc: number, product: { priceTotal: number }) => acc + product.priceTotal,
+    (acc: number, product: any) => acc + product.priceTotal,
     0,
   );
 
   return (
     <div className="w-full">
-      <div className="h-80 bg-white rounded-[2.5rem] p-6 w-full max-w-sm shadow-xl flex flex-col gap-4 border-gray-100 border">
-        <div className="flex justify-between items-center">
-          <h2 className="text-[11px] text-black font-black uppercase tracking-widest">
-            Tu Selección
-          </h2>
-          {car.length > 0 && (
-            <span
-              onClick={() => clearProducts()}
-              className="animate-pulse cursor-pointer text-gray-800 hover:text-red-500 text-[14px] transition-colors font-bold underline"
-            >
-              Borrar platos
-            </span>
-          )}
-          <span className="bg-red-50 text-red-500 text-[10px] px-3 py-1 rounded-full font-bold">
-            {car.length} platos
-          </span>
-        </div>
-
-        <div className="overflow-y-auto h-40">
-          {isLoading ? (
-            <span className="text-gray-400 text-xs block text-center py-4 italic">
-              Cargando...
-            </span>
-          ) : car.length > 0 ? (
-            car.map((product: PriceProducts) => (
-              <ProductOfCar
-                key={product.name}
-                name={product.name}
-                priceUnit={product.priceUnit}
-                priceTotal={product.priceTotal}
-                quantity={product.quantity}
-                id={product.id}
-              />
-            ))
-          ) : (
-            <span className="text-gray-400 text-xs block text-center py-4">
-              No has agregado nada al carrito
-            </span>
-          )}
-        </div>
-
-        {car.length > 0 && (
-          <span className="flex justify-between items-center  border-t border-dashed border-gray-200">
-            <span className="text-gray-600 font-bold text-xs">Total:</span>
-            <span className="text-xs font-black text-red-600">
-              ${totalPrice}
-            </span>
-          </span>
-        )}
-
-        <div className="relative">
-          <input
-            required
-            onChange={(e) => setName(e.target.value)}
-            value={name}
-            type="text"
-            placeholder="Tu Nombre..."
-            className="h-10 w-full border border-red-400 rounded-xl py-4 px-5 text-sm outline-none focus:border-red-600 transition-all placeholder:text-gray-500 font-medium"
-          />
-        </div>
-
+      {isMinimized && (
         <button
-          disabled={car.length === 0 || name.trim().length === 0 || isPending}
-          onClick={() => sendData()}
-          className={`h-12 w-full py-4 rounded-xl transition-all uppercase tracking-widest text-sm shadow-lg
-          ${
-            car.length === 0 || name.trim().length === 0 || isPending
-              ? "bg-gray-300 cursor-not-allowed text-gray-500 shadow-none"
-              : "bg-red-600 hover:bg-red-500 text-white shadow-red-200 active:scale-[0.98] font-black"
-          }`}
+          onClick={() => setIsMinimized(false)}
+          className="fixed bottom-6 right-6 lg:hidden flex items-center justify-center w-14 h-14 bg-red-600 text-white rounded-full shadow-2xl z-40 border-2 border-white active:scale-95 transition-all"
         >
-          {isPending ? (
-            <span className="flex items-center justify-center gap-2">
-              <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>
-              Enviando...
-            </span>
-          ) : (
-            "Procesar pedido"
-          )}
+          <div className="relative">
+            <ShoppingCart size={24} />
+            {car.length > 0 && (
+              <span className="absolute -top-3 -right-3 bg-black text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border border-white">
+                {car.length}
+              </span>
+            )}
+          </div>
         </button>
-      </div>
+      )}
 
+      <div
+        className={`
+          ${isMinimized ? "hidden lg:flex" : "fixed inset-0 z-120 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"} 
+          lg:relative lg:inset-auto lg:flex lg:w-full lg:bg-transparent lg:p-0
+        `}
+        onClick={() => setIsMinimized(true)}
+      >
+        <div
+          className="bg-white rounded-[2.5rem] p-6 w-full max-w-sm flex flex-col gap-4 border-gray-100 border shadow-2xl h-80 lg:shadow-xl lg:border-none"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="w-full flex justify-between   items-center">
+            <h2 className="text-[11px] text-black font-black uppercase tracking-widest">
+              Tu Selección
+            </h2>
+            <div className="flex  items-center">
+              {car.length > 0 && (
+                <span
+                  onClick={clearProducts}
+                  className="cursor-pointer text-gray-800 hover:text-red-500 text-[12px] transition-colors font-bold underline"
+                >
+                  Borrar platos
+                </span>
+              )}
+            </div>
+            <span className="bg-red-50 text-red-500 text-[10px] px-3 py-1 rounded-full font-bold">
+              {car.length} platos
+            </span>
+            {!isMinimized && (
+              <button
+                onClick={() => setIsMinimized(true)}
+                className="lg:hidden p-1 bg-gray-100 rounded-full"
+              >
+                <X size={18} />
+              </button>
+            )}
+          </div>
+
+          <div className="overflow-y-auto h-40 pr-1">
+            {isLoading ? (
+              <span className="text-gray-400 text-xs block text-center py-4 italic">
+                Cargando...
+              </span>
+            ) : car.length > 0 ? (
+              car.map((product: PriceProducts) => (
+                <ProductOfCar key={product.id} {...product} />
+              ))
+            ) : (
+              <span className="text-gray-400 text-xs block text-center py-4 italic">
+                No has agregado nada aún
+              </span>
+            )}
+          </div>
+
+          <div className="mt-auto space-y-3">
+            {car.length > 0 && (
+              <div className="flex justify-between items-center border-t border-dashed border-gray-200 pt-2">
+                <span className="text-gray-600 font-bold text-xs uppercase">
+                  Total:
+                </span>
+                <span className="text-sm font-black text-red-600">
+                  ${totalPrice}
+                </span>
+              </div>
+            )}
+            <input
+              required
+              onChange={(e) => setName(e.target.value)}
+              value={name}
+              type="text"
+              placeholder="Tu Nombre..."
+              className="h-10 w-full border border-red-400 rounded-xl px-4 text-xs outline-none focus:border-red-600 transition-all font-medium"
+            />
+            <button
+              disabled={
+                car.length === 0 || name.trim().length === 0 || isPending
+              }
+              onClick={() => {
+                setIsMinimized(true);
+                sendData();
+              }}
+              className={`h-11 w-full rounded-xl transition-all uppercase tracking-widest text-[10px] font-black
+                ${car.length === 0 || name.trim().length === 0 || isPending ? "bg-gray-200 text-gray-400" : "bg-red-600 text-white shadow-lg active:scale-95"}`}
+            >
+              {isPending ? "Enviando..." : "Procesar pedido"}
+            </button>
+          </div>
+        </div>
+      </div>
       {isModalOpen && lastOrder && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md transition-opacity"
+          className="fixed inset-0 z-140 flex items-center justify-center bg-black/40 backdrop-blur-md transition-opacity"
           onClick={() => setIsModalOpen(false)}
         >
           <div

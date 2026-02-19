@@ -77,7 +77,7 @@ const TurnMonitor = () => {
             {onHold.length > 0 ? (
               onHold.map((t) => (
                 <p key={t.id} className="text-white text-xl font-bold">
-                  {t.numeroTicket}
+                  #{t.numeroTicket}
                 </p>
               ))
             ) : (
@@ -146,7 +146,7 @@ const TurnMonitor = () => {
             retored.map((t) => (
               <div
                 key={t.id}
-                className="bg-gray-800/30 py-3 rounded-xl text-center text-gray-600 font-bold text-sm"
+                className="bg-gray-800/30 py-3 rounded-xl text-center text-gray-300 font-bold text-sm"
               >
                 #{t.numeroTicket}
               </div>

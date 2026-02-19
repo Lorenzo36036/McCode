@@ -1,5 +1,7 @@
+import { MessageSquareWarning } from "lucide-react";
+
 interface Props {
-  type: "success" | "danger" | "warning";
+  type?: "success" | "danger" | "warning";
   message: string;
   setClose: (close: boolean) => void;
 }
@@ -11,19 +13,13 @@ const Toast = ({ type = "success", message, setClose }: Props) => {
         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
       ),
       colors: "text-emerald-500 bg-emerald-50",
-      borderColor: "border-gray-100",
+      borderColor: "border-gray-400",
       text: "¡Éxito!",
     },
     danger: {
-      icon: (
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M6 18L18 6M6 6l12 12"
-        />
-      ),
+      icon: <MessageSquareWarning />,
       colors: "text-[#e35151] bg-red-50",
-      borderColor: "border-red-50",
+      borderColor: "border-red-400",
       text: "Error",
     },
     warning: {
@@ -35,7 +31,7 @@ const Toast = ({ type = "success", message, setClose }: Props) => {
         />
       ),
       colors: "text-amber-500 bg-amber-50",
-      borderColor: "border-amber-100",
+      borderColor: "border-amber-400",
       text: "Atención",
     },
   };
@@ -60,7 +56,9 @@ const Toast = ({ type = "success", message, setClose }: Props) => {
         </svg>
       </div>
       <div className="ms-3">
-        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">
+        <p
+          className={`${config.colors} text-[10px] font-bold  uppercase tracking-widest leading-none`}
+        >
           {config.text}
         </p>
         <p className="text-sm font-black italic uppercase tracking-tight text-gray-800 leading-tight">
@@ -68,7 +66,7 @@ const Toast = ({ type = "success", message, setClose }: Props) => {
         </p>
       </div>
       <button
-        onClick={() => setClose}
+        onClick={() => setClose(false)}
         className="ms-auto text-gray-400 hover:text-gray-900 p-1.5 hover:bg-gray-50 rounded-lg transition-colors"
       >
         <svg
