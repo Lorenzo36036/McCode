@@ -50,7 +50,7 @@ export class PurchaseOrderService {
     return { message: 'Se actualizo el estado correctamente ' };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} purchaseOrder`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} purchaseOrder`;
+  // }
 }

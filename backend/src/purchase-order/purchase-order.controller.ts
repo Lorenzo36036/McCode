@@ -5,11 +5,13 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
+  // Delete
 } from '@nestjs/common';
 import { PurchaseOrderService } from './purchase-order.service';
 import { CreatePurchaseOrderDto } from './dto/create-purchase-order.dto';
 import { UpdatePurchaseOrderDto } from './dto/update-purchase-order.dto';
+import { Auth } from '@/auth/decorators/auth.decorator';
+import { Role } from '@/common/interface/roles';
 
 @Controller('purchase-order')
 export class PurchaseOrderController {
@@ -20,6 +22,7 @@ export class PurchaseOrderController {
     return this.purchaseOrderService.create(createPurchaseOrderDto);
   }
 
+  @Auth(Role.Admin)
   @Get()
   findAll() {
     return this.purchaseOrderService.findAll();
@@ -30,6 +33,7 @@ export class PurchaseOrderController {
     return this.purchaseOrderService.findOne(id);
   }
 
+  @Auth(Role.Admin)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -38,8 +42,8 @@ export class PurchaseOrderController {
     return this.purchaseOrderService.update(id, updatePurchaseOrderDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.purchaseOrderService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.purchaseOrderService.remove(+id);
+  // }
 }
