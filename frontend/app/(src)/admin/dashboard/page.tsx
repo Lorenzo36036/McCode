@@ -6,6 +6,7 @@ import {
   ChefHat,
   PackageCheck,
   ShoppingBag,
+  Search,
 } from "lucide-react";
 import OrderCard from "./components/OrderCard";
 import QuickStat from "./components/QuickStat";
@@ -13,6 +14,7 @@ import { getpurchaseOrder } from "@/app/api/get ";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { updateState } from "@/app/api/patch";
 import { useGetCredentials } from "../context/AuthProvider";
+import { useState } from "react";
 
 enum OrderStatus {
   PENDIENTE = "pendiente",
@@ -24,7 +26,7 @@ enum OrderStatus {
 
 const SimpleAdmin = () => {
   const { token } = useGetCredentials();
-
+  const [search, setSearch] = useState("");
   const queryClient = useQueryClient();
 
   const { data: products = [], isLoading } = useQuery({
@@ -61,17 +63,22 @@ const SimpleAdmin = () => {
     },
   });
 
+  const filterBySearch = (p: any) => {
+    if (!search) return true;
+    return p.numeroTicket.toString().includes(search);
+  };
+
   const pedidosPendientes = products.filter(
-    (p: any) => p.estado === OrderStatus.PENDIENTE,
+    (p: any) => p.estado === OrderStatus.PENDIENTE && filterBySearch(p),
   );
   const pedidosEnCocina = products.filter(
-    (p: any) => p.estado === OrderStatus.PREPARANDO,
+    (p: any) => p.estado === OrderStatus.PREPARANDO && filterBySearch(p),
   );
   const pedidosListos = products.filter(
-    (p: any) => p.estado === OrderStatus.LISTO,
+    (p: any) => p.estado === OrderStatus.LISTO && filterBySearch(p),
   );
   const pedidosRetirados = products.filter(
-    (p: any) => p.estado === OrderStatus.RETIRADO,
+    (p: any) => p.estado === OrderStatus.RETIRADO && filterBySearch(p),
   );
 
   const nextStatusMap: Record<OrderStatus, OrderStatus> = {
@@ -119,8 +126,8 @@ const SimpleAdmin = () => {
 
   return (
     <div className="w-full min-h-screen bg-gray-50 font-sans">
-      <main className="max-w-5xl mx-auto p-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+      <main className="max-w-5xl mx-auto p-6 flex-col flex gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 ">
           <QuickStat
             label="Pendientes"
             value={pedidosPendientes.length.toString()}
@@ -146,7 +153,30 @@ const SimpleAdmin = () => {
             icon={<DollarSign size={16} />}
           />
         </div>
-
+        <div className="relative w-full max-w-120">
+          <input
+            className="w-full p-4 pl-12 pr-10 border border-gray-500 rounded-xl h-12"
+            onChange={(e) => {
+              const value = e.target.value.replace(/\D/g, "");
+              setSearch(value);
+            }}
+            value={search}
+            type="text"
+            placeholder="Ingresa numero de ticket"
+          />
+          <Search
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            size={20}
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500"
+            >
+              ✕
+            </button>
+          )}
+        </div>
         <section className="mb-12">
           <h2 className="text-sm font-black uppercase tracking-[0.2em] text-gray-400 mb-4 flex items-center gap-2">
             <DollarSign size={16} className="text-[#e35151]" /> Pedidos por

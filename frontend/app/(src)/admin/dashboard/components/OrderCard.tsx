@@ -59,7 +59,7 @@ const OrderCard = ({
             <button
               onClick={handleUpdateStatus}
               disabled={!handleUpdateStatus}
-              className={`bg-gray-800 hover:bg-gray-700 text-white font-black py-4 px-3 rounded-2xl shadow-lg transition-all uppercase tracking-widest text-[11px] active:scale-95 w-full md:w-auto`}
+              className={`bg-gray-800 hover:bg-gray-700 text-white font-black py-4 px-3 rounded-2xl shadow-lg transition-all uppercase tracking-widest text-[9px] active:scale-95 w-full md:w-auto`}
             >
               Cancelar
             </button>
@@ -68,7 +68,7 @@ const OrderCard = ({
           <button
             onClick={onAction}
             disabled={!onAction}
-            className={`${btnColor} text-white font-black py-4 px-8 rounded-2xl shadow-lg transition-all uppercase tracking-widest text-[11px] active:scale-95 w-full md:w-auto`}
+            className={`${btnColor} text-white font-black py-4 px-8 rounded-2xl shadow-lg transition-all uppercase tracking-widest text-[9px] active:scale-95 w-full md:w-auto`}
           >
             {btnText}
           </button>

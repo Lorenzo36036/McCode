@@ -21,8 +21,6 @@ const TurnMonitor = () => {
     refetchOnWindowFocus: false,
   });
 
-  console.log(tickets);
-
   const onHold = tickets.filter(
     (ticket: any) => ticket.estado === OrderStatus.PENDIENTE,
   );
@@ -75,7 +73,7 @@ const TurnMonitor = () => {
           </p>
           <div className="space-y-2">
             {onHold.length > 0 ? (
-              onHold.map((t) => (
+              onHold.map((t: any) => (
                 <p key={t.id} className="text-white text-xl font-bold">
                   #{t.numeroTicket}
                 </p>
@@ -92,7 +90,7 @@ const TurnMonitor = () => {
           </p>
           <div className="space-y-2">
             {preparing.length > 0 ? (
-              preparing.map((t) => (
+              preparing.map((t: any) => (
                 <p key={t.id} className="text-yellow-600 text-xl font-bold">
                   #{t.numeroTicket}
                 </p>
@@ -109,7 +107,7 @@ const TurnMonitor = () => {
           </p>
           <div className="space-y-2">
             {ready.length > 0 ? (
-              ready.map((t) => (
+              ready.map((t: any) => (
                 <p
                   key={t.id}
                   className="text-green-500 text-xl font-bold drop-shadow-[0_0_8px_rgba(34,197,94,0.4)]"
@@ -143,7 +141,7 @@ const TurnMonitor = () => {
   hover:[&::-webkit-scrollbar-thumb]:bg-gray-600"
         >
           {retored.length > 0 ? (
-            retored.map((t) => (
+            retored.map((t: any) => (
               <div
                 key={t.id}
                 className="bg-gray-800/30 py-3 rounded-xl text-center text-gray-300 font-bold text-sm"

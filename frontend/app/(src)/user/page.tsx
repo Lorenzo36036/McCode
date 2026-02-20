@@ -61,7 +61,7 @@ function Page() {
 
           <div
             className={`
-              ${isMonitorOpen ? "fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" : "hidden lg:flex"} 
+              ${isMonitorOpen ? "fixed inset-0 z-100 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" : "hidden lg:flex"} 
               lg:relative lg:inset-auto lg:bg-transparent lg:flex-col lg:gap-4 w-full
             `}
             onClick={() => setIsMonitorOpen(false)}

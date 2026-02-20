@@ -20,20 +20,23 @@ const SearchBar = () => {
     queryKey: ["shift_Id"],
     queryFn: () => getShiftTicketId(search),
     enabled: false,
+    retry: false,
   });
 
   const ticketSearch = async () => {
     if (search.trim()) {
-      const { data } = await refetch();
+      const { data, isError } = await refetch();
 
-      if (data) {
-        setIsModalOpen(true);
+      if (isError || !data) {
+        alert("El número de ticket no existe o no se encontró.");
         setSearch("");
+        return;
       }
+
+      setIsModalOpen(true);
+      setSearch("");
     }
   };
-
-  console.log(ticket);
 
   return (
     <div className="w-full max-w-2xl mx-auto">
@@ -57,7 +60,11 @@ const SearchBar = () => {
 
         <input
           type="text"
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value.replace(/\D/g, "");
+
+            setSearch(value);
+          }}
           value={search}
           placeholder="Busca por numero de ticket..."
           className="w-full bg-white border border-red-100 rounded-full py-5 pl-16 pr-20 shadow-sm text-gray-700 placeholder:text-gray-400 outline-none focus:border-[#e35151] transition-all"
@@ -99,8 +106,8 @@ const SearchBar = () => {
                   <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest">
                     Estado del Turno
                   </h2>
-                  <p className="text-4xl font-black text-gray-900">
-                    #{ticket.numeroTicket}
+                  <p className="text-3xl font-black text-gray-900">
+                    #{ticket.numeroTicket || "Verifique el ticket "}
                   </p>
                 </div>
                 <div className="bg-red-50 text-[#e35151] p-3 rounded-2xl">
@@ -125,7 +132,7 @@ const SearchBar = () => {
                 <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
                   <span className="text-gray-500 font-medium">Cliente</span>
                   <span className="text-gray-900 font-bold">
-                    {ticket.nombreConsumidor}
+                    {ticket.nombreConsumidor || "Desconocido"}
                   </span>
                 </div>
 
@@ -146,7 +153,7 @@ const SearchBar = () => {
                               : "bg-yellow-100 text-yellow-600"
                     }`}
                   >
-                    {ticket.estado?.toUpperCase()}
+                    {ticket.estado?.toUpperCase() || "Desconocido"}
                   </span>
                 </div>
               </div>
