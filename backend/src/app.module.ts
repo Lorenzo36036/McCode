@@ -10,6 +10,7 @@ import { Product } from './products/entities/product.entity';
 import { ShiftsModule } from './shifts/shifts.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { CreateUserCommand } from './users/command/user.command';
 
 @Module({
   imports: [
@@ -39,6 +40,6 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     UsersModule,
   ],
-  providers: [AppService],
+  providers: [AppService, CreateUserCommand],
 })
 export class AppModule {}

@@ -19,13 +19,18 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   const config = new DocumentBuilder()
-    .setTitle('McCode')
-    .setDescription('Api de McCode')
+    .setTitle('McLorenzo')
+    .setDescription('Api de McLorenzo')
+    .addBearerAuth()
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
-  app.enableCors();
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
   await app.listen(process.env.PORT ?? 3000);
 }
 void bootstrap();
